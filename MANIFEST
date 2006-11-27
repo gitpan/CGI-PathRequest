@@ -1,0 +1,9 @@
+lib/CGI/PathRequest.pm
+t/basic.t
+t/excerpt.t
+t/default.t
+t/public_html/demo/hellokitty.gif
+t/public_html/demo/civil.txt
+Makefile.PL
+MANIFEST
+META.yml                                 Module meta-data (added by MakeMaker)
