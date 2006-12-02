@@ -1,11 +1,10 @@
-#!/usr/bin/perl -w
 use Test::Simple tests=>7;
 use Cwd;
 use strict;
 use lib './lib';
-require CGI::PathRequest;
+use CGI::PathRequest;
 
-$ENV{DOCUMENT_ROOT} = cwd()."/public_html";
+$ENV{DOCUMENT_ROOT} = cwd()."/t/public_html";
 
 
 ok( my $e = new CGI::PathRequest({ default=>'/', SERVER_NAME => 'mescaline'}), 'default to root');
@@ -14,10 +13,10 @@ ok( $e->is_root );
 ok( $e->is_dir );
 ok( !$e->is_text );
 
-print STDERR 
-' www '.	$e->www ."\n".
-' url '.	$e->url."\n".
-' abs_loc '.	$e->abs_loc."\n";
+#print STDERR 
+#' www '.	$e->www ."\n".
+#' url '.	$e->url."\n".
+#' abs_loc '.	$e->abs_loc."\n";
 
 
 

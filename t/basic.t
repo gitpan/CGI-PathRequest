@@ -1,10 +1,9 @@
-#!/usr/bin/perl -w
 use Test::Simple tests=>88;
-use Cwd;
 use strict;
+use Cwd;
 use lib './lib';
-require CGI::PathRequest;
-#use Smart::Comments '####';
+use CGI::PathRequest;
+use Smart::Comments '####';
 $ENV{DOCUMENT_ROOT} = cwd()."/t/public_html";
 
 
@@ -126,62 +125,58 @@ mkdir($ENV{DOCUMENT_ROOT}.'/demo/subdee1');
 for (@{$rels}){
 	my $test = $_;
 
-	print STDERR "== test $$test{rel_path}\n";
+	my $test_rel_path = $test->{rel_path};
+	### $test_rel_path
 	
 	my $r;
 	
 
 	if ($test->{exists}){
-		ok( $r = new CGI::PathRequest({ rel_path=> $test->{rel_path} }),'construct instance');	
-		ok( $r->exists ,'existance');
+		ok( $r = new CGI::PathRequest({ rel_path=> $test->{rel_path} }),'construct instance for: '.$test->{rel_path});	
+		ok( $r->exists ,'exists() ');
 	} 
 	
 	else {
 		$r = new CGI::PathRequest({ rel_path=> $test->{rel_path} });
-		ok( !$r ,'construct instance must fail for nonexist resource ');
+		ok( !$r ,'constructor must fail to return object on non existant resource');
 		next;	
 	}	
 
 	
 		
 	
-	ok($r->is_dir == $test->{is_dir},'is_dir');
+	ok($r->is_dir == $test->{is_dir},'is_dir()');
 
 	if (defined $test->{is_empty_dir}){
-		ok($r->is_empty_dir == $test->{is_empty_dir},"is_empty_dir, control: $$test{is_empty_dir}, returned: ".$r->is_empty_dir );
+		ok($r->is_empty_dir == $test->{is_empty_dir},
+			"is_empty_dir()");
 	} else {
 		ok(!$r->is_empty_dir, 'should not be empty dir');
 		
 	}
 
 	if ($test->{is_dir}){
-		ok($r->is_dir, 'is dir '.$r->rel_path);
+		ok($r->is_dir, 'is_dir()');
 
 		$$test{has_ls} ? ok( scalar @{$r->ls} > 0 ) : ok( scalar @{$r->ls} == 0);
 		$$test{has_lsd} ? ok( scalar @{$r->lsd} > 0 ) : ok( scalar @{$r->lsd} == 0);
-		$$test{has_lsf} ? ok( scalar @{$r->lsf} > 0 ) : ok( scalar @{$r->lsf} == 0);
-		
-		
-		print STDERR " -$$test{has_ls} $$test{has_lsd} $$test{has_lsf}-\n";
-		
-	
-		
+		$$test{has_lsf} ? ok( scalar @{$r->lsf} > 0 ) : ok( scalar @{$r->lsf} == 0);	
 		
 	}
 	
-	ok($r->is_root == $test->{is_root}, "is_root,  control:$$test{is_root} returned:".$r->is_root);
-	ok($r->is_file == $test->{is_file}, 'is file');
+	ok($r->is_root == $test->{is_root}, "is_root(),  control:$$test{is_root} returned:".$r->is_root);
+	ok($r->is_file == $test->{is_file}, 'is_file()');
 	
-	ok($r->is_binary == $test->{is_binary},'is_binary');
-	ok($r->is_image == $test->{is_image},'is_image');
-	ok($r->abs_path eq $test->{abs_path},'abs_path') or print STDERR ' abs_path '.$r->abs_path." should be $$test{abs_path}\n";
-	ok($r->rel_path eq $test->{rel_path},'rel_path') or print STDERR ' rel_path '.$r->rel_path." should be $$test{rel_path}\n";
-	ok($r->abs_loc eq $test->{abs_loc},'abs_loc') or print STDERR ' abs_loc '.$r->abs_loc." should be $$test{abs_loc}\n";
-	ok($r->rel_loc eq $test->{rel_loc},'rel_loc') or print STDERR ' rel_loc '.$r->rel_loc." should be $$test{rel_loc}\n";	
-	ok($r->is_text == $test->{is_text},'is_text');
+	ok($r->is_binary == $test->{is_binary},'is_binary()');
+	ok($r->is_image == $test->{is_image},'is_image()');
+	ok($r->abs_path eq $test->{abs_path},'abs_path()') or print STDERR ' abs_path '.$r->abs_path." should be $$test{abs_path}\n";
+	ok($r->rel_path eq $test->{rel_path},'rel_path()') or print STDERR ' rel_path '.$r->rel_path." should be $$test{rel_path}\n";
+	ok($r->abs_loc eq $test->{abs_loc},'abs_loc()') or print STDERR ' abs_loc '.$r->abs_loc." should be $$test{abs_loc}\n";
+	ok($r->rel_loc eq $test->{rel_loc},'rel_loc()') or print STDERR ' rel_loc '.$r->rel_loc." should be $$test{rel_loc}\n";	
+	ok($r->is_text == $test->{is_text},'is_text()');
 
 	if ( defined $test->{ext} ){
-		ok($r->ext eq $test->{ext},'ext') or print STDERR " ext was ".$r->ext." should be $$test{ext}\n";;
+		ok($r->ext eq $test->{ext},'ext()') or print STDERR " ext was ".$r->ext." should be $$test{ext}\n";;
 	} else {
 		ok(!$r->ext,'ext');
 	}

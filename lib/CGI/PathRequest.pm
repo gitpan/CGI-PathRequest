@@ -2,7 +2,7 @@ package CGI::PathRequest;
 use CGI;
 use Cwd;
 use strict;
-our $VERSION = sprintf "%d.%02d", q$Revision: 1.8 $ =~ /(\d+)/g;
+our $VERSION = sprintf "%d.%02d", q$Revision: 1.9 $ =~ /(\d+)/g;
 use File::Type;
 
 use Time::Format qw(%time);

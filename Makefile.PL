@@ -3,11 +3,11 @@ WriteMakefile(
 	NAME				=> "CGI::PathRequest",
 	VERSION_FROM	=> 'lib/CGI/PathRequest.pm',
 	PREREQ_PM 		=> {
-		'CGI'	=> '3.00',
+		'CGI'	=> '3',
 		'File::Type' => '0.22',
-		'Time::Format' => '2.22',
-		'Want'	=> '0.11',
-		'Cwd'	=> '3.01',
+		'Time::Format' => '1',
+		'Want'	=> '0.12',
+		'Cwd'	=> '3',
 	},
 	'dist'			=> { COMPRESS => 'gzip', SUFFIX => 'gz' },
 );
