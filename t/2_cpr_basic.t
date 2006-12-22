@@ -1,33 +1,14 @@
-use Test::Simple tests=>88;
+use Test::Simple tests=>69;
 use strict;
 use Cwd;
 use lib './lib';
 use CGI::PathRequest;
-use Smart::Comments '####';
+#use Smart::Comments '###';
 $ENV{DOCUMENT_ROOT} = cwd()."/t/public_html";
 
 
 my $rels = [
 
-	{  
-		exists => 1,
-		rel_path => '/', 
-		is_root => 1,
-		is_dir => 1,
-		is_file => 0,
-		is_empty_dir=>0,
-		is_binary=> 1,
-		is_image => 0,
-		is_text => 0,
-		abs_path => $ENV{DOCUMENT_ROOT}.'/',
-		rel_loc => '/',
-		abs_loc => $ENV{DOCUMENT_ROOT}.'/',
-		ext => undef,
-		mime_type => undef,
-		has_lsd => 1,
-		has_lsf => 0,
-		has_ls => 1,
-	},
 	{ 
 		exists => 1,
 		rel_path => 'demo', 
@@ -39,8 +20,8 @@ my $rels = [
 		is_image => 0,
 		is_text => 0, 
 		abs_path => $ENV{DOCUMENT_ROOT}.'/demo',
-		rel_loc => '/',
-		abs_loc => $ENV{DOCUMENT_ROOT}.'/',
+		rel_loc => '',
+		abs_loc => $ENV{DOCUMENT_ROOT}.'',
 		ext => undef,
 		mime_type => undef,
 		has_lsd => 1,
@@ -68,6 +49,10 @@ my $rels = [
 		has_ls => undef,
 
 	},
+
+
+
+	
 	{ 
 		exists => 1,
 		rel_path => 'demo/civil.txt', 
@@ -138,6 +123,7 @@ for (@{$rels}){
 	
 	else {
 		$r = new CGI::PathRequest({ rel_path=> $test->{rel_path} });
+		if (defined $r) { print "--\n r is defined --$$test{rel_path}\n";}
 		ok( !$r ,'constructor must fail to return object on non existant resource');
 		next;	
 	}	
@@ -186,7 +172,9 @@ for (@{$rels}){
 		ok($r->mime_type, " mime_type: ".$r->mime_type);
 	} 
 	else {
-	 ok(!$r->mime_type, 'no mime type' );
+		#print STDERR $r->mime_type."\n";
+		ok(!$r->mime_type, 'no mime type' );
+	 
 	
 	}
 

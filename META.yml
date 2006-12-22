@@ -1,13 +1,14 @@
 # http://module-build.sourceforge.net/META-spec.html
 #XXXXXXX This is a prototype!!!  It will change in the future!!! XXXXX#
 name:         CGI-PathRequest
-version:      1.09
+version:      1.13
 version_from: lib/CGI/PathRequest.pm
 installdirs:  site
 requires:
     CGI:                           3
     Cwd:                           3
-    File::Type:                    0.22
+    File::MMagic:                  1
+    File::PathInfo:                1.06
     Time::Format:                  1
     Want:                          0.12
 
