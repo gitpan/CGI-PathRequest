@@ -28,11 +28,12 @@ ok(my $nav_prepped = $r->nav_prepped, 'nav_prepped');
 
 ## QUERY STRING
 
-for ( 'rel_path=', 'rel_path=/house.txt', 'rel_path=house.txt', 'rel_path=demo/../oake.jpg', 'rel_path=demo/subdee/../hellokitty.gif' ) {
+for ( 'rel_path=/', 'rel_path=/house.txt', 'rel_path=house.txt', 'rel_path=demo/../oake.jpg', 'rel_path=demo/subdee/../hellokitty.gif' ) {
    $ENV{QUERY_STRING} = $_;
    ### $ENV{QUERY_STRING}
    my $r = undef;
    $r = new CGI::PathRequest({ cgi=> new CGI($ENV{QUERY_STRING}) });
+   
    ### testings for doc root 
    if ( $r->is_DOCUMENT_ROOT ){
       my $rel_path = $r->rel_path;

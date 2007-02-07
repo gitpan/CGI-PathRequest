@@ -1,9 +1,9 @@
-use Test::Simple tests=>69;
+use Test::Simple 'no_plan';
 use strict;
 use Cwd;
 use lib './lib';
 use CGI::PathRequest;
-#use Smart::Comments '###';
+use Smart::Comments '###';
 $ENV{DOCUMENT_ROOT} = cwd()."/t/public_html";
 
 
@@ -122,10 +122,14 @@ for (@{$rels}){
 	} 
 	
 	else {
+      ### no existy
 		$r = new CGI::PathRequest({ rel_path=> $test->{rel_path} });
-		if (defined $r) { print "--\n r is defined --$$test{rel_path}\n";}
-		ok( !$r ,'constructor must fail to return object on non existant resource');
-		next;	
+      ok( !$r );
+      next;
+   
+	#	if ($r->set($ENV{DOCUMENT_ROOT}.'/'.$test->{rel_path})) { print "--\n r is defined --$$test{rel_path}\n";}
+		#ok( !$r ,'constructor must fail to return object on non existant resource');
+		#next;	
 	}	
 
 	

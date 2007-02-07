@@ -7,7 +7,7 @@ use base 'File::PathInfo';
 use Carp;
 use CGI;
 use HTML::Entities;
-our $VERSION = sprintf "%d.%02d", q$Revision: 1.13 $ =~ /(\d+)/g;
+our $VERSION = sprintf "%d.%02d", q$Revision: 1.15 $ =~ /(\d+)/g;
 
 
 sub new {
@@ -35,12 +35,26 @@ sub new {
 	#$self->_argument  # croaks on fail - should just return undef.. ?
 	#	or  croak ('request method:'.$self->{request_method}.' cant establish file path argument ');
 
-	$self->set( $self->_arg ) or return;
+   if ($self->_arg){
+      ### settiong
+	   $self->set( $self->_arg ) or return ; #or $self->{data}->{exists} = 0;
+   }   
 
-	$self->is_in_DOCUMENT_ROOT or $self->is_DOCUMENT_ROOT or croak('is not in document root');
-
+   ### ok
 	return $self;
 }
+
+sub exists {
+	my $self = shift;
+	if (defined $self->{data}->{exists}){
+		return $self->{data}->{exists};
+	}	
+	( -e $self->abs_path ) ? ( $self->{data}->{exists} = 1) : ($self->{data}->{exists} = 0);		
+	return $self->{data}->{exists};
+}
+
+
+
 
 # run once!?
 sub _arg {
@@ -73,13 +87,15 @@ sub _arg {
 		#	$argument=~s/^\///; # hack			
 	#	}
 		
-		$argument ||= $self->DOCUMENT_ROOT;	
+		#$argument ||= $self->DOCUMENT_ROOT;	
 		#### $argument
 
+      defined $argument or return; 
 		if ( -e $self->DOCUMENT_ROOT .'/'.$argument ){
 			$argument = $self->DOCUMENT_ROOT .'/'.$argument;
 		}
 		
+      
 		$self->{_arg} = $argument;		
 	}			
 	
@@ -157,15 +173,6 @@ sub get_cgi {
 
 
 
-
-sub exists {
-	my $self = shift;
-	if (defined $self->{data}->{exists}){
-		return $self->{data}->{exists};
-	}	
-	( -e $self->abs_path ) ? ( $self->{data}->{exists} = 1) : ($self->{data}->{exists} = 0);		
-	return $self->{data}->{exists};
-}
 
 
 

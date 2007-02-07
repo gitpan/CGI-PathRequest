@@ -8,8 +8,11 @@ CGI::PathRequest - get file info in a cgi environment
 
 	use CGI::PathRequest;
 	
-	my $r = new CGI::PathRequest or die('file not present');
-	
+	my $r = new CGI::PathRequest;
+
+   if( $r->set('/home/me/public_html/documents') ){
+      $r->is_in_DOCUMENT_ROOT or warn 'not in document root, sure you wanna serve?';
+      
 	
 	if ( $f->is_dir ){ 
 		print $f->filename . " is a directory in " . $f->rel_loc ." it contains ". $f->ls_count. " entries." ; 
@@ -27,7 +30,7 @@ The constructor is told the relative path to a file (or directory) and from that
 really useful things like, relative path, absoltue path, filename, filesize, absolute location, relative
 location, etc. Things you normally have to regex for, they are already done here.
 
-CGI::PathRequest inherits File::PathInfo and all its methods.
+CGI::PathRequest inherits L<File::PathInfo> and all its methods.
 
 =head1 new()
 
@@ -411,6 +414,10 @@ option not to resolve symlinks
 get rid of default.
 if resource does not exist, just return undef.
 
+=head1 CHANGES
+
+a file requested which is not in DOCUMENT ROOT (symlink) 
+no longer croaks module
 
 =head1 AUTHOR
 
