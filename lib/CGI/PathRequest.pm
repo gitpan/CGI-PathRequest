@@ -2,13 +2,13 @@ package CGI::PathRequest;
 use strict;
 use warnings;
 use File::MMagic;
-#use Smart::Comments '####';
 use base 'File::PathInfo';
 use Carp;
 use CGI;
 use HTML::Entities;
-our $VERSION = sprintf "%d.%02d", q$Revision: 1.15 $ =~ /(\d+)/g;
-
+our $VERSION = sprintf "%d.%02d", q$Revision: 1.16 $ =~ /(\d+)/g;
+my $DEBUG = 0;
+sub DEBUG : lvalue { $DEBUG }
 
 sub new {
 	my ($class, $self) = (shift, shift);
@@ -19,7 +19,8 @@ sub new {
 	$self->{default}			||= undef; # what is the default	
 	if ($self->{default}){ warn "use of 'default' to CGI::PathRequest is deprecated"; }
 	
-	if ($self->{tainted_request}){ $self->{rel_path} = $self->{tainted_request}; warn 'warning: argument tainted_path to CGI::PathRequest is deprecated.'; }
+	if ($self->{tainted_request}){ $self->{rel_path} = $self->{tainted_request}; 
+		warn 'warning: argument tainted_path to CGI::PathRequest is deprecated.'; }
 	$self->{ rel_path }			||= undef;	
 	
 	$self->{ excerpt_size }		||= 255; # chars if excerpt is called for	
@@ -91,6 +92,7 @@ sub _arg {
 		#### $argument
 
       defined $argument or return; 
+		$self->DOCUMENT_ROOT or die("DOCUMENT_ROOT not defined?"); 
 		if ( -e $self->DOCUMENT_ROOT .'/'.$argument ){
 			$argument = $self->DOCUMENT_ROOT .'/'.$argument;
 		}
@@ -649,7 +651,6 @@ sub _get_rel_path_from_cgi {
 	my $self = shift;
 
 	my $req = $self->get_cgi->param($self->{param_name}) or return;
-
 
 	my $wasfullurl = 0;
 	if ($req=~s/^https\:\/\/|^http\:\/\///){
