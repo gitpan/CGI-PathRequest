@@ -3,6 +3,7 @@ use strict;
 use Cwd;
 use lib './lib';
 use CGI::PathRequest;
+CGI::PathRequest::DEBUG = 1;
 use Smart::Comments '###';
 $ENV{DOCUMENT_ROOT} = cwd()."/t/public_html";
 
@@ -189,3 +190,15 @@ rmdir($ENV{DOCUMENT_ROOT}.'/demo/subdee1');
 
 
 
+open(FILE, ">$ENV{DOCUMENT_ROOT}/temp.html");
+print FILE "<p>html</p>";
+close FILE;
+my $f = new CGI::PathRequest("$ENV{DOCUMENT_ROOT}/temp.html");
+ok($f, 'instance of html');
+
+my $is_html =  $f->is_html;
+
+## $is_html
+
+ok($f->is_html);
+unlink $f->abs_path;

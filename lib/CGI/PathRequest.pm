@@ -2,19 +2,23 @@ package CGI::PathRequest;
 use strict;
 use warnings;
 use File::MMagic;
-use base 'File::PathInfo';
+use base 'File::PathInfo::Ext';
 use Carp;
 use CGI;
 use HTML::Entities;
-our $VERSION = sprintf "%d.%02d", q$Revision: 1.16 $ =~ /(\d+)/g;
+our $VERSION = sprintf "%d.%02d", q$Revision: 1.18 $ =~ /(\d+)/g;
 my $DEBUG = 0;
 sub DEBUG : lvalue { $DEBUG }
 
 sub new {
 	my ($class, $self) = (shift, shift);
+	if (defined $self and ref $self ne 'HASH'){
+		$self = __PACKAGE__->SUPER::new($self);		
+	}
 	
 	$self								||= {};	
 	$self->{ param_name }		||= 'rel_path';	
+	
 	
 	$self->{default}			||= undef; # what is the default	
 	if ($self->{default}){ warn "use of 'default' to CGI::PathRequest is deprecated"; }
@@ -224,7 +228,7 @@ sub _extended {
 	$data->{alt} = $data->{filename_pretty};
 
 
-	
+	$data->{is_html} = $self->is_html;
 
 	$self->{_data}->{_extended} = $data;
 	
@@ -232,6 +236,17 @@ sub _extended {
 	return $self->{_data}->{_extended};
 }
 
+sub is_html {
+	my $self = shift;
+
+#	print STDERR "is text: ".$self->is_text if DEBUG;
+	
+	$self->is_text or return 0;
+	
+#	print STDERR "ext : [".$self->ext.']' if DEBUG;
+	$self->ext=~/s?html?$/ or return 0;
+	return 1;
+}
 
 sub is_root {
 	my $self = shift;

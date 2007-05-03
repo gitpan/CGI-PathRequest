@@ -126,6 +126,9 @@ Returns filename's extension.
 
 Returns true if the request is the same as ENV DOCUMENT_ROOT
 
+=head1 is_html()
+
+Returns boolean, accepts no argument. File is text and has htm type ext.
 
 =head1 EXTENDED METHODS
 
