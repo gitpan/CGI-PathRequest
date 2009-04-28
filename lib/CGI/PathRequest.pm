@@ -6,8 +6,9 @@ use base 'File::PathInfo::Ext';
 use Carp;
 use CGI;
 use HTML::Entities;
-our $VERSION = sprintf "%d.%02d", q$Revision: 1.18 $ =~ /(\d+)/g;
-my $DEBUG = 0;
+use vars qw/$VERSION $DEBUG/;
+$VERSION = sprintf "%d.%02d", q$Revision: 1.19 $ =~ /(\d+)/g;
+$DEBUG = 0;
 sub DEBUG : lvalue { $DEBUG }
 
 sub new {
@@ -17,32 +18,25 @@ sub new {
 	}
 	
 	$self								||= {};	
-	$self->{ param_name }		||= 'rel_path';	
-	
-	
-	$self->{default}			||= undef; # what is the default	
-	if ($self->{default}){ warn "use of 'default' to CGI::PathRequest is deprecated"; }
-	
-	if ($self->{tainted_request}){ $self->{rel_path} = $self->{tainted_request}; 
-		warn 'warning: argument tainted_path to CGI::PathRequest is deprecated.'; }
-	$self->{ rel_path }			||= undef;	
-	
-	$self->{ excerpt_size }		||= 255; # chars if excerpt is called for	
-	bless $self, $class;
+	$self->{param_name}		   ||= 'rel_path';	
+	$self->{default}			   ||= undef; # what is the default	   
+	$self->{tainted_request}   and ( $self->{rel_path} = $self->{tainted_request} );    
+	$self->{rel_path}			   ||= undef;		
+	$self->{excerpt_size}		||= 255; # chars if excerpt is called for	
+	$self->{status}				= [];
+	$self->{request_made}		= 0; # was a request received
 
+	$self->{tainted_request} 
+      and carp('warning: argument tainted_path to CGI::PathRequest is deprecated.'); 
+	$self->{default} 
+      and carp("use of 'default' to CGI::PathRequest is deprecated"); 	
 
-	
-	# internals
-	$self->{ status }						= [];
-	$self->{ request_made }				= 0; # was a request received
+	bless $self, $class;	
 
-
-	#$self->_argument  # croaks on fail - should just return undef.. ?
-	#	or  croak ('request method:'.$self->{request_method}.' cant establish file path argument ');
 
    if ($self->_arg){
       ### settiong
-	   $self->set( $self->_arg ) or return ; #or $self->{data}->{exists} = 0;
+	   $self->set( $self->_arg ) or return; #or $self->{data}->{exists} = 0;
    }   
 
    ### ok
@@ -222,29 +216,19 @@ sub _extended {
 
 	$data->{filename_pretty}= $self->filename_only or die('filename_only returns nothing?'.$self->abs_path);	
 	$data->{filename_pretty}=~s/_/ /sg;	
-
 	$data->{filename_pretty} = join '', map {ucfirst lc} split (/(?=\s)/, $data->{filename_pretty}); # http://perlmonks.org/?node_id=471292
 
 	$data->{alt} = $data->{filename_pretty};
-
-
 	$data->{is_html} = $self->is_html;
-
-	$self->{_data}->{_extended} = $data;
-	
+	$self->{_data}->{_extended} = $data;	
 
 	return $self->{_data}->{_extended};
 }
 
 sub is_html {
 	my $self = shift;
-
-#	print STDERR "is text: ".$self->is_text if DEBUG;
-	
-	$self->is_text or return 0;
-	
-#	print STDERR "ext : [".$self->ext.']' if DEBUG;
-	$self->ext=~/s?html?$/ or return 0;
+	$self->is_text or return 0;	
+	$self->ext=~/s?html?$/i or return 0;
 	return 1;
 }
 
@@ -252,7 +236,6 @@ sub is_root {
 	my $self = shift;
 	return $self->_extended->{is_root};	
 }
-
 
 sub filename_pretty {
 	my $self = shift;

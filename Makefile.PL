@@ -1,14 +1,28 @@
 use ExtUtils::MakeMaker;
+
 WriteMakefile(
-	NAME				=> "CGI::PathRequest",
-	VERSION_FROM	=> 'lib/CGI/PathRequest.pm',
-	PREREQ_PM 		=> {
-		'CGI'	=> 0,
-		'File::MMagic' => 0,
-		'Time::Format' => 0,
-		'Want'	=> 0,
-		'File::PathInfo' => 0,
-		'Cwd'	=> 0,
-	},
-	'dist'			=> { COMPRESS => 'gzip', SUFFIX => 'gz' },
+   NAME => 'CGI::PathRequest',
+   VERSION_FROM => 'lib/CGI/PathRequest.pm',
+   
+
+   # gen /usr/bin/pmused by Tue Apr 28 11:44:49 EDT 2009 
+   PREREQ_PM => {
+      'CGI'                               => '3',
+      'Carp'                              => '1',
+      'Cwd'                               => '3',
+      'File::MMagic'                      => '1.27',
+      'File::PathInfo::Ext'               => '1.27',
+      'HTML::Entities'                    => '1.35',
+      'Smart::Comments'                   => '1',
+      'Test::Simple'                      => '0',
+   },
+
+   
+   LICENSE => 'perl',
+   
+   
+   
+   EXE_FILES => [],
 );
+
+
